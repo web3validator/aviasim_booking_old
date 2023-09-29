@@ -6,6 +6,8 @@ use Illuminate\Support\Facades\Log;
 
 use function App\array_search_r;
 
+$SIMULATOR_TYPE = null;
+
 class Booking
 {
     public $currency = '';
@@ -115,7 +117,7 @@ class Booking
             ];
         }
 
-        if ( ! empty($meta_query)) {
+        if (! empty($meta_query)) {
             $args['meta_query'] = $meta_query;
         }
 
@@ -156,7 +158,7 @@ class Booking
         }
     }
 
-    private function send_email($order, $date, $time='')
+    private function send_email($order, $date, $time = '')
     {
         try {
             $order = $order instanceof Order ? $order : Order::get($order);
@@ -167,7 +169,6 @@ class Booking
             Log::info('EMAIL');
             $mailgun = new MailgunMessage();
             $mailgun -> send_email_cert($order, $date, $time);
-
         } catch (\Exception $e) {
             Log::error('sent sms', [ "error", $e->getMessage()]);
             // print $e->getMessage();
@@ -213,56 +214,50 @@ class Booking
 
                 $bookingtype = "Тип не выбран";
 
-                if ($order->bookingtype){
-                    $bookingtype  =$order->bookingtype;
-
-                }
+            if ($order->bookingtype) {
+                $bookingtype  = $order->bookingtype;
+            }
                     // Log::info('Gift SMS Email');
-                if ($order->delivery_address){
-                    // Log::info('Gift SMS Email Cart');
-                    $date = "Без дати";
-                    $time = '';
-                    if ($order->date){
-                        $date  = date('d.m.Y', $order->date) . " o " . date('H:i', $order->date);
-                    }
-                    
-                    $message = "Шановний клієнте, дякуємо за  замовлення польоту на авіасимуляторі Боїнг 737!\n\nМи надішлемо вам карту найлижчим часом за адресою {$order->delivery_address}.\n\nЗ повагою, Команда Aviasim\nТел: +380507370800\n\nНа наш веб-сайт: https://aviasim.com.ua";
-                    
-                    if ($order->bookingtype == 'F18')
-                        $message = "Шановний клієнте, дякуємо за  замовлення польоту на авіасимуляторі F/A-18 Hornet!\n\nМи надішлемо вам карту найлижчим часом за адресою {$order->delivery_address}.\n\nЗ повагою, Команда Aviasim\nТел: +380507370800\n\nНа наш веб-сайт: https://aviasim.com.ua";
-
-                    $message_admin = "Address: {$order->delivery_address}.\n\nКонтактно інформація:\nName: {$order->name}\nType: {$bookingtype}\nKey: {$order->key}\nEmail: {$order->email}\nPhone: {$order->phone}\nDate: {$date}\nDuration: {$order->duration} хв\nStatus: ✅ {$order->status}";
-
-                    
-                    $this->send_sms($order, $message, $message_admin);
-
-                    return ;
-
-                }
+            if ($order->delivery_address) {
+                // Log::info('Gift SMS Email Cart');
                 $date = "Без дати";
-                $time = ''; 
-                if ($order->date){
-                    $date  = date('d.m.Y', $order->date);
-                    $time  = date('H:i', $order->date);
-
+                $time = '';
+                if ($order->date) {
+                    $date  = date('d.m.Y', $order->date) . " o " . date('H:i', $order->date);
                 }
+
+                $message = "Шановний клієнте, дякуємо за  замовлення польоту на авіасимуляторі Боїнг 737!\n\nМи надішлемо вам карту найлижчим часом за адресою {$order->delivery_address}.\n\nЗ повагою, Команда Aviasim\nТел: +380507370800\n\nНа наш веб-сайт: https://aviasim.com.ua";
+
+                if ($order->bookingtype == 'F18') {
+                    $message = "Шановний клієнте, дякуємо за  замовлення польоту на авіасимуляторі F/A-18 Hornet!\n\nМи надішлемо вам карту найлижчим часом за адресою {$order->delivery_address}.\n\nЗ повагою, Команда Aviasim\nТел: +380507370800\n\nНа наш веб-сайт: https://aviasim.com.ua";
+                }
+
+                $message_admin = "Address: {$order->delivery_address}.\n\nКонтактно інформація:\nName: {$order->name}\nType: {$bookingtype}\nKey: {$order->key}\nEmail: {$order->email}\nPhone: {$order->phone}\nDate: {$date}\nDuration: {$order->duration} хв\nStatus: ✅ {$order->status}";
+
+
+                $this->send_sms($order, $message, $message_admin);
+
+                return ;
+            }
+                $date = "Без дати";
+                $time = '';
+            if ($order->date) {
+                $date  = date('d.m.Y', $order->date);
+                $time  = date('H:i', $order->date);
+            }
 
 
                 $message = "Шановний клієнте, дякуємо за замовлення подарункового сертифікату на політ авіасимулятора Боїнг 737!\n\nМи надішлемо на вашу пошту повідомлення з сертифікатом.\n\nЗ повагою, Команда Aviasim\nТел: +380507370800\n\nВеб-сайт: https://aviasim.com.ua";
 
-                if ($order->bookingtype == 'F18')
-                        $message = "Шановний клієнте, дякуємо за замовлення подарункового сертифікату на політ авіасимулятора F/A-18 Hornet!\n\nМи надішлемо на вашу пошту повідомлення з сертифікатом.\n\nЗ повагою, Команда Aviasim\nТел: +380507370800\n\nВеб-сайт: https://aviasim.com.ua";
+            if ($order->bookingtype == 'F18') {
+                    $message = "Шановний клієнте, дякуємо за замовлення подарункового сертифікату на політ авіасимулятора F/A-18 Hornet!\n\nМи надішлемо на вашу пошту повідомлення з сертифікатом.\n\nЗ повагою, Команда Aviasim\nТел: +380507370800\n\nВеб-сайт: https://aviasim.com.ua";
+            }
 
 
                 $message_admin = "Відправити сертифікат на електрону пошту.\n\nName: {$order->name}\nType: {$bookingtype}\nKey: {$order->key}\nEmail: {$order->email}\nPhone: {$order->phone}\nDate: $date $time\nDuration: {$order->duration} хв\nStatus: ✅ {$order->status}";
 
                 // $this->send_email($order, $date, $time);
                 $this->send_sms($order, $message, $message_admin);
-
-
-
-
-
         } catch (\Exception $e) {
             Log::error('Gift sent sms', [ "error", $e->getMessage()]);
             // print $e->getMessage();
@@ -286,7 +281,7 @@ class Booking
             ? get_field('liqpay_private_key_demo', 'option')
             : get_field('liqpay_private_key', 'option');
 
-        $sign = base64_encode(sha1($private_key.$request['data'].$private_key, 1));
+        $sign = base64_encode(sha1($private_key . $request['data'] . $private_key, 1));
 
         if ($sign !== $request['signature']) {
             wp_die();
@@ -298,50 +293,43 @@ class Booking
         $order            = Order::get($order_id);
         $order->liqpay    = json_encode($response);
         $order->liqpay_ts = time();
-        
+
 
         switch ($response['status']) {
-            
-            
             case 'success':
-                
-                
                 $order->status = 'payment-success';
 
                 if ($order->email != "bodo@bodo.ua") {
-
                     Log::info('DATA', [ "DATA", $order->date]);
 
-                    if($order->gift){
+                    if ($order->gift) {
                         $this->gift_send_sms($order);
 
                         break;
                     }
-                    
+
 
                     $date  = date('d.m.Y', $order->date);
                     $time  = date('H:i', $order->date);
 
                     $message = "Шановний клієнте, дякуємо за  замовлення польоту на авіасимуляторі Боїнг 737!\n\nЧекаємо Вас {$date}/{$time} за адресою: вул. Герцена, 35, (внутрішній двір, окремий вхід між 4-ю та 5-ю секціями.)\n\nДля відкриття шлагбауму №1 телефонуйте за номером:\n+380 67 804 8487.\nШлагбаум №2:\n+380 67 804 8493.\n\nБажаємо гарного відпочинку та приємних вражень!\n\nПосилання на адресу в GoogleMaps:\nhttps://goo.gl/maps/o7TPzXDCD3vKaUeD7\n\nНа наш веб-сайт:\nhttps://aviasim.com.ua";
 
-                    if ($order->bookingtype == 'F18')
+                    if ($order->bookingtype == 'F18') {
                         $message = "Шановний клієнте, дякуємо за  замовлення польоту на авіасимуляторі F/A-18 Hornet!\n\nЧекаємо Вас {$date}/{$time} за адресою: вул. Герцена, 35, (внутрішній двір, окремий вхід між 4-ю та 5-ю секціями.)\n\nДля відкриття шлагбауму №1 телефонуйте за номером:\n+380 67 804 8487.\nШлагбаум №2:\n+380 67 804 8493.\n\nБажаємо гарного відпочинку та приємних вражень!\n\nПосилання на адресу в GoogleMaps:\nhttps://goo.gl/maps/o7TPzXDCD3vKaUeD7\n\nНа наш веб-сайт:\nhttps://aviasim.com.ua";
-                    
-                    
+                    }
+
+
 
                     $message_admin = "Name: {$order->name}\nType: {$order->bookingtype}\nKey: {$order->key}\nEmail: {$order->email}\nPhone: {$order->phone}\nDate: {$date} o {$time}\nDuration: {$order->duration} хв\nStatus: ✅ {$order->status}";
 
-                    
-                    
+
+
                     $this->send_sms($order, $message, $message_admin);
                 }
                 break;
             case 'error':
             case 'failure':
-
                 $order->status = 'payment-failed';
-
-
         }
         Log::info("Fali SEND SMS", [
         'status' => $order->status,
@@ -362,6 +350,8 @@ class Booking
 
     public function order_callback(\WP_REST_Request $request): \WP_REST_Response
     {
+        global $SIMULATOR_TYPE;
+
         $errors = [];
 
         $has_gift      = isset($request['has_gift']) && $request['has_gift'] === 'yes';
@@ -375,13 +365,13 @@ class Booking
 
         $required_fields = ['name', 'phone', 'email', 'rules'];
 
-        if ( ! $has_gift) {
+        if (! $has_gift) {
             $required_fields[] = 'duration';
         } else {
             $required_fields[] = 'gift_code';
         }
 
-        if ( ! $is_gift || $is_fixed_date) {
+        if (! $is_gift || $is_fixed_date) {
             $required_fields[] = 'date';
         }
 
@@ -400,7 +390,7 @@ class Booking
         }
 
         foreach ($required_fields as $field_name) {
-            if ( ! isset($request[$field_name]) || empty($request[$field_name])) {
+            if (! isset($request[$field_name]) || empty($request[$field_name])) {
                 $errors[] = [
                     'field'   => $field_name,
                     'message' => sprintf('Поле <code>%s</code> обов&apos;язкове!', $field_name),
@@ -414,15 +404,15 @@ class Booking
         $duration = $has_gift ? 60
             : sanitize_text_field($request['duration']); // TODO get duration from gift code
 
-        $type = sanitize_text_field($request['bookingtype']);
+        $SIMULATOR_TYPE = $type = sanitize_text_field($request['bookingtype']);
         $current_url = $_SERVER['REQUEST_URI'];
         if ($type === 'F18' || strpos($current_url, '/order-2') !== false || strpos($current_url, '/f18') !== false) {
             $price    = $has_gift ? 0 : self::get_price_2($duration); // / TODO get price from gift code
         } else {
-            $price    = $has_gift ? 0 : self::get_price($duration); // / TODO get price from gift code 
+            $price    = $has_gift ? 0 : self::get_price($duration); // / TODO get price from gift code
         }
         $date     = null;
-        
+
         $bookingtype = sanitize_text_field($request['bookingtype']);
 
         if ($has_gift) {
@@ -437,9 +427,9 @@ class Booking
                  AND meta_value = %s",
                 $giftCode
             );
-    
+
             $count = $wpdb->get_var($query2);
-    
+
             if ($count >= 2) {
                 // Если gift code найден два или более раза, выдаем ошибку
                 $errors[] = [
@@ -447,10 +437,11 @@ class Booking
                     'message' => __('Код сертифікату був вже використаний раніше.'),
                 ];
             }
-        
-            function isGiftCodeValid($giftCode) {
+
+            function isGiftCodeValid($giftCode)
+            {
                 global $wpdb, $existingPostID;
-        
+
                 // Проверяем, существует ли запись с именем $giftCode в базе данных
                 $query = $wpdb->prepare(
                     "SELECT p.ID
@@ -460,14 +451,14 @@ class Booking
                      AND p.post_status = 'payment-success'",
                     $giftCode
                 );
-        
+
                 $existingPostID = $wpdb->get_var($query);
-        
+
                 return $existingPostID;
             }
-        
+
             $existingPostID = isGiftCodeValid($giftCode);
-        
+
             if ($existingPostID) {
                 // Если запись существует, извлекаем значение duration из записи
                 $duration = get_post_meta($existingPostID, 'booking_duration', true);
@@ -498,23 +489,20 @@ class Booking
                 $available_dates
             );
 
-            // if ($date === null) {
-            //     $errors[] = [
-            //         'field'   => 'duration',
-            //         'message' => __('Дата недоступна'),
-            //     ];
-            // }
+            if ($date === null) {
+                $errors[] = [
+                    'field'   => 'duration',
+                    'message' => __('Дата недоступна'),
+                ];
+            }
 
             if ($date) {
                 $end = ($duration * 60) + $date;
-                
-                $type = get_field('simulator_type');
-                
-                if ($type === 'boeing') {
 
-                $existing = Order::where_and(
-                    ['date', 'BETWEEN', [$date, $end - 1]],
-                    [
+                if ($type === 'Boeing') {
+                    $existing = Order::where_and(
+                        ['date', 'BETWEEN', [$date, $end - 1]],
+                        [
                         'post_status' => ['payment-success', 'payment-pending'],
                         'meta_query'  => [
                             [
@@ -522,32 +510,32 @@ class Booking
                                 'value' => 'boeing',
                             ],
                         ],
-                    ]
-                );
-            } else {
-                $existing = Order::where_and(
-                    ['date', 'BETWEEN', [$date, $end - 1]],
-                    [
+                        ]
+                    );
+                } else {
+                    $existing = Order::where_and(
+                        ['date', 'BETWEEN', [$date, $end - 1]],
+                        [
                         'post_status' => ['payment-success', 'payment-pending'],
                         'meta_query'  => [
-                            [
-                                'key'   => 'booking_bookingtype',
-                                'value' => 'f18',
-                            ],
+                        [
+                            'key'   => 'booking_bookingtype',
+                            'value' => 'f18',
                         ],
-                    ]
-                );
-            }
+                        ],
+                        ]
+                    );
+                }
 
-                // if ($existing) {
-                //     $errors[] = __('Цей діапазон часу недоступний');
-                // }
+                if ($existing) {
+                    $errors[] = __('Цей діапазон часу недоступний');
+                }
             }
         }
 
         $promocode = sanitize_text_field($request['promocode']);
 
-        if ( ! empty($promocode)) {
+        if (! empty($promocode)) {
             $discount = self::get_discount($promocode, $date);
 
             if ($discount['status'] === false) {
@@ -561,8 +549,12 @@ class Booking
             }
         }
 
-        if ( ! empty($errors)) {
+        if (! empty($errors)) {
             return new \WP_REST_Response($errors, 400);
+        }
+
+        if ($has_gift) {
+                $date = get_post_meta($existingPostID, 'booking_date', true); // Получаем значение booking_date
         }
 
         $order = new Order([
@@ -591,13 +583,14 @@ class Booking
 
             $message = "Шановний клієнте, дякуємо за  замовлення польоту на авіасимуляторі Боїнг 737!\n\nЧекаємо Вас {$date}/{$time} за адресою: вул. Герцена, 35, (внутрішній двір, окремий вхід між 4-ю та 5-ю секціями.)\n\nДля відкриття шлагбауму №1 телефонуйте за номером:\n+380 67 804 8487.\nШлагбаум №2:\n+380 67 804 8493.\n\nБажаємо гарного відпочинку та приємних вражень!\n\nПосилання на адресу в GoogleMaps:\nhttps://goo.gl/maps/o7TPzXDCD3vKaUeD7\n\nНа наш веб-сайт:\nhttps://aviasim.com.ua";
 
-            if ($order->bookingtype == 'F18')
+            if ($order->bookingtype == 'F18') {
                         $message = "Шановний клієнте, дякуємо за  замовлення польоту на авіасимуляторі F/A-18 Hornet!\n\nЧекаємо Вас {$date}/{$time} за адресою: вул. Герцена, 35, (внутрішній двір, окремий вхід між 4-ю та 5-ю секціями.)\n\nДля відкриття шлагбауму №1 телефонуйте за номером:\n+380 67 804 8487.\nШлагбаум №2:\n+380 67 804 8493.\n\nБажаємо гарного відпочинку та приємних вражень!\n\nПосилання на адресу в GoogleMaps:\nhttps://goo.gl/maps/o7TPzXDCD3vKaUeD7\n\nНа наш веб-сайт:\nhttps://aviasim.com.ua";
+            }
 
             $date = "Без дати";
 
 
-            if($order->date){
+            if ($order->date) {
                 $date  = date('d.m.Y H:i', $order->date);
             }
 
@@ -624,10 +617,10 @@ class Booking
             'action'      => 'pay',
             'amount'      => $saved->price,
             'currency'    => $this->currency['code'] ?? 'UAH',
-            'description' => sprintf('%s %s %s', $saved->key, $saved->name, $saved->email),
-            'order_id'    => $saved->ID.$saved->key,
+            'description' => sprintf('%s %s %s %s', $saved->key, $saved->name, $saved->email, $saved->date),
+            'order_id'    => $saved->ID . $saved->key,
             'result_url'  => $saved->slug,
-            'server_url'  => rtrim($liqpay_server_url, '/').'/wp-json/avia/order/liqpay',
+            'server_url'  => rtrim($liqpay_server_url, '/') . '/wp-json/avia/order/liqpay',
             'language'    => substr(get_bloginfo('language'), 0, 2),
         ];
 
@@ -652,7 +645,7 @@ class Booking
     {
         $order = Order::get($id);
 
-        if ( ! $order) {
+        if (! $order) {
             return;
         }
 
@@ -663,18 +656,19 @@ class Booking
             $date = "Без дати";
 
 
-            if($order->date){
+            if ($order->date) {
                 $date  = date('d.m.Y H:i', $order->date);
             }
 
-            
+
 
             $message_admin = "Name: {$order->name}\nKey: {$order->key}\nEmail: {$order->email}\nPhone: {$order->phone}\nDate: {$date}\nDuration: {$order->duration} хв\nStatus: ❌ {$order->status}";
-            
+
             $message = "Вітаю!\nМи помітили, що Ви намагалися замовити політ на авіасимуляторі Боїнг 737 на нашому вебсайті, але оплата не була завершена. Часом це може траплятись через технічні збої.\n\nЯкщо у Вас виникли запитання або проблеми під час процесу оплати, будь ласка, дайте нам знати. Ми завжди готові допомогти та відповісти на Ваші запитання!\n\nЗверніться до нашого менеджера за номером 0507370800 для отримання додаткової інформації та допомоги.\n\nhttps://aviasim.com.ua";
-            
-            if ($order->bookingtype == 'F18')
+
+            if ($order->bookingtype == 'F18') {
                         $message = "Вітаю!\nМи помітили, що Ви намагалися замовити політ на авіасимуляторі F/A-18 Hornet на нашому вебсайті, але оплата не була завершена. Часом це може траплятись через технічні збої.\n\nЯкщо у Вас виникли запитання або проблеми під час процесу оплати, будь ласка, дайте нам знати. Ми завжди готові допомогти та відповісти на Ваші запитання!\n\nЗверніться до нашого менеджера за номером 0507370800 для отримання додаткової інформації та допомоги.\n\nhttps://aviasim.com.ua";
+            }
 
             $this->send_sms($order, $message, $message_admin);
 
@@ -686,19 +680,20 @@ class Booking
 
     public static function available_dates(): array
     {
+        global $SIMULATOR_TYPE;
         $time = current_time('timestamp');
 
         $today             = date('Ymd', $time);
         $today_ts          = strtotime($today);
-        $type = get_field('simulator_type');
-        if ($type === 'boeing') {
-        $working_hours     = get_field('order_dates', 'option');
-        $calendar_duration = get_field('order_calendar_duration', 'option') ?? 2;
-        $calendar_duration = intval($calendar_duration) * 7;
+        $type = $SIMULATOR_TYPE;
+        if ($type === 'Boeing') {
+            $working_hours     = get_field('order_dates', 'option');
+            $calendar_duration = get_field('order_calendar_duration', 'option') ?? 2;
+            $calendar_duration = intval($calendar_duration) * 7;
         } else {
-        $working_hours     = get_field('order_dates_new_2', 'option');
-        $calendar_duration = get_field('order_calendar_duration_2', 'option') ?? 2;
-        $calendar_duration = intval($calendar_duration) * 7;
+            $working_hours     = get_field('order_dates_new_2', 'option');
+            $calendar_duration = get_field('order_calendar_duration_2', 'option') ?? 2;
+            $calendar_duration = intval($calendar_duration) * 7;
         }
 
         $calendar_data = [];
@@ -721,9 +716,8 @@ class Booking
             });
         }, $calendar_data);
 
-        $type = get_field('simulator_type');
         $current_url = $_SERVER['REQUEST_URI'];
-        if ($type === 'F18' || strpos($current_url, '/order-2') !== false || strpos($current_url, '/f18') !== false) {
+        if (strtolower($type) === 'f18' || strpos($current_url, '/order-2') !== false || strpos($current_url, '/f18') !== false) {
             $orders = Order::where_and(
                 ['date', '>', $today_ts],
                 [
@@ -736,7 +730,6 @@ class Booking
                     ],
                 ]
             );
-
         } else {
             $orders = Order::where_and(
                 ['date', '>', $today_ts],
@@ -751,11 +744,11 @@ class Booking
                 ]
             );
         }
-            
+
 
         foreach ($orders as $order) {
             $day_ts = strtotime(date('Ymd', $order->date));
-    
+
             if (isset($calendar_data[$day_ts]) && in_array($order->date, $calendar_data[$day_ts])) {
                 $calendar_data[$day_ts] = array_filter(
                     $calendar_data[$day_ts],
@@ -766,7 +759,7 @@ class Booking
                 );
             }
         }
-    
+
         return $calendar_data;
     }
 
@@ -809,7 +802,7 @@ class Booking
 
             $available = $current_promocode['available_to'];
 
-            if ( ! empty($available)) {
+            if (! empty($available)) {
                 $available_ts = strtotime($available);
                 $now_ts       = current_time('timestamp');
 
@@ -823,7 +816,7 @@ class Booking
 
             $restricted_days = $current_promocode['day_of_week'];
 
-            if ( ! empty($restricted_days) && $date) {
+            if (! empty($restricted_days) && $date) {
                 $current_day = date('w', $date);
 
                 if (in_array($current_day, $restricted_days)) {
