@@ -10,15 +10,12 @@
 
   <label data-show="fixed_date" class="radio-group radio-group--column">
     <span>{{ __('Select fixed date') }}</span>
-
     <select name="day">
       <option value="">{{ __('Select day', 'sage') }}</option>
-
       @foreach($dates as $day_ts => $slot_ts)
         <option value="{{ $day_ts }}">{{ wp_date('D j M', $day_ts) }}</option>
       @endforeach
     </select>
-
     <select name="date">
       <option value="">{{ __('Select time', 'sage') }}</option>
     </select>
@@ -44,31 +41,33 @@
       $currency = get_field('order_currency', 'option');
       $price = '';
     @endphp
-    <?php $type = get_field('simulator_type'); ?>
-    <?php if (is_front_page()) { ?>
-    @foreach (get_field('order_durations', 'option') as $item)
-      <label>
-        @if ($item['featured'])
-            @php
-              $price = $item['price'];
-            @endphp
-        @endif
-        <input type="radio" name="duration" value="{{ $item['time'] }}" data-price="{{ $item['price'] }}" {{ checked($item['featured'] || $loop->first) }}>
-        <span>{{ $item['time'] }} хв {{ $item['price'] }} {{ $currency['text'] }}</span>
-      </label>
-    @endforeach
+
+    <?php 
+    // Проверка, является ли текущая страница главной или страницей 'boeing-737-ng'
+    if (is_front_page() || is_page('boeing-737-ng')) { ?>
+        @foreach (get_field('order_durations', 'option') as $item)
+          <label>
+            @if ($item['featured'])
+                @php
+                  $price = $item['price'];
+                @endphp
+            @endif
+            <input type="radio" name="duration" value="{{ $item['time'] }}" data-price="{{ $item['price'] }}" {{ checked($item['featured'] || $loop->first) }}>
+            <span>{{ $item['time'] }} хв {{ $item['price'] }} {{ $currency['text'] }}</span>
+          </label>
+        @endforeach
     <?php } else { ?>
-      @foreach (get_field('order_durations_2', 'option') as $item)
-      <label>
-        @if ($item['featured'])
-            @php
-              $price = $item['price'];
-            @endphp
-        @endif
-        <input type="radio" name="duration" value="{{ $item['time'] }}" data-price="{{ $item['price'] }}" {{ checked($item['featured'] || $loop->first) }}>
-        <span>{{ $item['time'] }} хв {{ $item['price'] }} {{ $currency['text'] }}</span>
-      </label>
-    @endforeach
+        @foreach (get_field('order_durations_2', 'option') as $item)
+          <label>
+            @if ($item['featured'])
+                @php
+                  $price = $item['price'];
+                @endphp
+            @endif
+            <input type="radio" name="duration" value="{{ $item['time'] }}" data-price="{{ $item['price'] }}" {{ checked($item['featured'] || $loop->first) }}>
+            <span>{{ $item['time'] }} хв {{ $item['price'] }} {{ $currency['text'] }}</span>
+          </label>
+        @endforeach
     <?php } ?>
   </div>
 
@@ -104,9 +103,7 @@
 
   <div class="form-message"></div>
 
-  <?php $type = get_field('simulator_type'); ?>
   <div style="display: none;"><input type="text" name="_text" value=""></div>
-{{--  <input type="hidden" name="date">--}}
-  <input type="hidden" name="bookingtype" value="<?php if ( is_front_page() ) : ?>Boeing<?php else : ?>F18<?php endif; ?>">
+  <input type="hidden" name="bookingtype" value="<?php if ( is_front_page() || is_page('boeing-737-ng') ) : ?>Boeing<?php else : ?>F18<?php endif; ?>">
   <input type="hidden" name="price" value="{{ $price }}">
 </form>
