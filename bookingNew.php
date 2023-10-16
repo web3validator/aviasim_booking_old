@@ -217,21 +217,19 @@ class Booking
                 $bookingtype  =$order->bookingtype;
 
             }
-            // Log::info('Gift SMS Email');
             if ($order->delivery_address){
-                // Log::info('Gift SMS Email Cart');
                 $date = "Без дати";
                 $time = '';
                 if ($order->date){
                     $date  = date('d.m.Y', $order->date) . " o " . date('H:i', $order->date);
                 }
 
-                $message = "Шановний клієнте, дякуємо за  замовлення польоту на авіасимуляторі Боїнг 737!\n\nМи надішлемо вам карту найлижчим часом за адресою {$order->delivery_address}.\n\nЗ повагою, Команда Aviasim\nТел: +380507370800\n\nНа наш веб-сайт: https://aviasim.com.ua";
+                $message = "Шановний клієнте, дякуємо за  замовлення польоту на авіасимуляторі Боїнг-737!\n\nМи надішлемо Вам пластиковий сертифікат найближчим часом на вказану Вами адресу: {$order->delivery_address}.\n\nЗ повагою, Команда Aviasim\nТел: +380507370800\n\nВеб-сайт: https://aviasim.com.ua";
 
                 if ($order->bookingtype == 'F18')
-                    $message = "Шановний клієнте, дякуємо за  замовлення польоту на авіасимуляторі F/A-18 Hornet!\n\nМи надішлемо вам карту найлижчим часом за адресою {$order->delivery_address}.\n\nЗ повагою, Команда Aviasim\nТел: +380507370800\n\nНа наш веб-сайт: https://aviasim.com.ua";
+                    $message = "Шановний клієнте, дякуємо за  замовлення польоту на авіасимуляторі F/A-18 Hornet!\n\nМи надішлемо Вам пластиковий сертифікат найближчим часом на вказану Вами адресу: {$order->delivery_address}.\n\nЗ повагою, Команда Aviasim\nТел: +380507370800\n\nВеб-сайт: https://aviasim.com.ua";
 
-                $message_admin = "Address: {$order->delivery_address}.\n\nКонтактно інформація:\nName: {$order->name}\nType: {$bookingtype}\nKey: {$order->key}\nEmail: {$order->email}\nPhone: {$order->phone}\nDate: {$date}\nDuration: {$order->duration} хв\nStatus: ✅ {$order->status}";
+                $message_admin = "Address: {$order->delivery_address}.\n\nКонтактна інформація:\nName: {$order->name}\nType: {$bookingtype}\nKey: {$order->key}\nEmail: {$order->email}\nPhone: {$order->phone}\nDate: {$date}\nDuration: {$order->duration} хв\nStatus: ✅ {$order->status}";
 
 
                 $this->send_sms($order, $message, $message_admin);
@@ -254,9 +252,9 @@ class Booking
                 $message = "Шановний клієнте, дякуємо за замовлення подарункового сертифікату на політ авіасимулятора F/A-18 Hornet!\n\nМи надішлемо на вашу пошту повідомлення з сертифікатом.\n\nЗ повагою, Команда Aviasim\nТел: +380507370800\n\nВеб-сайт: https://aviasim.com.ua";
 
 
-            $message_admin = "Відправити сертифікат на електрону пошту.\n\nName: {$order->name}\nType: {$bookingtype}\nKey: {$order->key}\nEmail: {$order->email}\nPhone: {$order->phone}\nDate: $date $time\nDuration: {$order->duration} хв\nStatus: ✅ {$order->status}";
+            $message_admin = "Відправити сертифікат на електрону пошту.(Відправлено ботом ☑️)\n\nName: {$order->name}\nType: {$bookingtype}\nKey: {$order->key}\nEmail: {$order->email}\nPhone: {$order->phone}\nDate: $date $time\nDuration: {$order->duration} хв\nStatus: ✅ {$order->status}";
 
-            // $this->send_email($order, $date, $time);
+            $this->send_email($order, $date, $time);
             $this->send_sms($order, $message, $message_admin);
 
 
@@ -322,10 +320,10 @@ class Booking
                     $date  = date('d.m.Y', $order->date);
                     $time  = date('H:i', $order->date);
 
-                    $message = "Шановний клієнте, дякуємо за  замовлення польоту на авіасимуляторі Боїнг 737!\n\nЧекаємо Вас {$date}/{$time} за адресою: вул. Герцена, 35, (внутрішній двір, окремий вхід між 4-ю та 5-ю секціями.)\n\nДля відкриття шлагбауму №1 телефонуйте за номером:\n+380 67 804 8487.\nШлагбаум №2:\n+380 67 804 8493.\n\nБажаємо гарного відпочинку та приємних вражень!\n\nПосилання на адресу в GoogleMaps:\nhttps://goo.gl/maps/o7TPzXDCD3vKaUeD7\n\nНа наш веб-сайт:\nhttps://aviasim.com.ua";
+                    $message = "Шановний клієнте, дякуємо за  замовлення польоту на авіасимуляторі Боїнг 737!\n\nЧекаємо Вас {$date} {$time} за адресою: вул. Герцена, 35, (внутрішній двір, окремий вхід між 4-ю та 5-ю секціями.)\n\nДля відкриття шлагбауму №1 телефонуйте за номером:\n+380 67 804 8487.\nШлагбаум №2:\n+380 67 804 8493.\n\nБажаємо гарного відпочинку та приємних вражень!\n\nПосилання на адресу в GoogleMaps:\nhttps://goo.gl/maps/o7TPzXDCD3vKaUeD7\n\nНа наш веб-сайт:\nhttps://aviasim.com.ua";
 
                     if ($order->bookingtype == 'F18')
-                        $message = "Шановний клієнте, дякуємо за  замовлення польоту на авіасимуляторі F/A-18 Hornet!\n\nЧекаємо Вас {$date}/{$time} за адресою: вул. Герцена, 35, (внутрішній двір, окремий вхід між 4-ю та 5-ю секціями.)\n\nДля відкриття шлагбауму №1 телефонуйте за номером:\n+380 67 804 8487.\nШлагбаум №2:\n+380 67 804 8493.\n\nБажаємо гарного відпочинку та приємних вражень!\n\nПосилання на адресу в GoogleMaps:\nhttps://goo.gl/maps/o7TPzXDCD3vKaUeD7\n\nНа наш веб-сайт:\nhttps://aviasim.com.ua";
+                        $message = "Шановний клієнте, дякуємо за  замовлення польоту на авіасимуляторі F/A-18 Hornet!\n\nЧекаємо Вас {$date} {$time} за адресою: вул. Герцена, 35, (внутрішній двір, окремий вхід між 4-ю та 5-ю секціями.)\n\nДля відкриття шлагбауму №1 телефонуйте за номером:\n+380 67 804 8487.\nШлагбаум №2:\n+380 67 804 8493.\n\nБажаємо гарного відпочинку та приємних вражень!\n\nПосилання на адресу в GoogleMaps:\nhttps://goo.gl/maps/o7TPzXDCD3vKaUeD7\n\nНа наш веб-сайт:\nhttps://aviasim.com.ua";
 
 
 
@@ -442,8 +440,6 @@ class Booking
                 array($giftCode, $bookingtype)
             );
 
-            $count = $wpdb->get_var($query2);
-
             $unlimited_giftCodes = ['vnebo_b60', 'vnebo_b120', 'vnebo_f50', 'vnebo_f100'];
 
             if ($count >= 2 && !in_array($giftCode, $unlimited_giftCodes) ) {
@@ -469,6 +465,7 @@ class Booking
                     array($giftCode, $bookingtype)
                 );
 
+
                 $existingPostID = $wpdb->get_var($query);
 
                 return $existingPostID;
@@ -491,7 +488,7 @@ class Booking
             } else {
                 $errors[] = [
                     'field'   => 'gift_code',
-                    'message' => __('Код подарункового сертифікату не існує.'),
+                    'message' => __('Неправильний код сертифікату чи тип авіасимулятора.'),
                 ];
             }
         }
@@ -571,10 +568,10 @@ class Booking
             return new \WP_REST_Response($errors, 400);
         }
 
-// зачем это?
-//        if ($has_gift) {
-//            $date = get_post_meta($existingPostID, 'booking_date', true); // Получаем значение booking_date
-//        }
+        // зачем это?
+        // if ($has_gift) {
+        //     $date = get_post_meta($existingPostID, 'booking_date', true); // Получаем значение booking_date
+        // }
 
         $order = new Order([
             'name'             => sanitize_text_field($request['name']),
@@ -680,7 +677,7 @@ class Booking
 
 
 
-            $message_admin = "Name: {$order->name}\nKey: {$order->key}\nEmail: {$order->email}\nPhone: {$order->phone}\nDate: {$date}\nDuration: {$order->duration} хв\nStatus: ❌ {$order->status}";
+            $message_admin = "Name: {$order->name}\nType: {$order->bookingtype}\nKey: {$order->key}\nEmail: {$order->email}\nPhone: {$order->phone}\nDate: {$date}\nDuration: {$order->duration} хв\nStatus: ❌ {$order->status}";
 
             $message = "Вітаю!\nМи помітили, що Ви намагалися замовити політ на авіасимуляторі Боїнг 737 на нашому вебсайті, але оплата не була завершена. Часом це може траплятись через технічні збої.\n\nЯкщо у Вас виникли запитання або проблеми під час процесу оплати, будь ласка, дайте нам знати. Ми завжди готові допомогти та відповісти на Ваші запитання!\n\nЗверніться до нашого менеджера за номером 0507370800 для отримання додаткової інформації та допомоги.\n\nhttps://aviasim.com.ua";
 
